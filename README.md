@@ -46,7 +46,7 @@ The project uses the Brazilian e-commerce dataset with approximately:
 - Used appropriate data types (DATETIME, DECIMAL, VARCHAR)  
 
 ### 🔹 Data Import
-- Imported CSV files using `LOAD DATA INFILE`  
+- Imported CSV files using `LOAD DATA INFILE.`  
 - Handled real-world issues:
   - File permission errors  
   - Date format inconsistencies  
@@ -75,3 +75,92 @@ CASE
 WHEN order_delivered_customer_date > order_estimated_delivery_date THEN 1
 ELSE 0
 END AS is_return
+
+
+---
+
+### 🧠 Why This Dataset is Useful
+
+This dataset provides a multi-dimensional view of the business, allowing analysis across:
+
+- Customer behavior  
+- Product performance  
+- Delivery efficiency  
+- Pricing and shipping  
+- Geographic trends  
+
+---
+
+## 🧱 Data Engineering (MySQL)
+
+### 🔹 Database Setup
+
+The raw CSV data was imported into MySQL by creating structured tables for each dataset. Proper data types were assigned to ensure efficient storage and querying:
+
+- `VARCHAR` for identifiers  
+- `DATETIME` for timestamps  
+- `DECIMAL` for price-related fields  
+
+---
+
+### 🔹 Data Import Challenges
+
+During the import process, several real-world issues were encountered:
+
+- File permission restrictions (`ERROR 1290`)
+- Incorrect date formats (`ERROR 1292`)
+- Disabled local file loading (`ERROR 2068`)
+- Missing table references (`ERROR 1146`)
+
+These were resolved by configuring MySQL settings, enabling local file imports, and properly formatting date fields.
+
+---
+
+## 🔄 Data Transformation
+
+### 🔗 Master Table Creation
+
+To simplify analysis and improve performance, a denormalized master table called `ecommerce_analysis` was created by joining:
+
+- Orders dataset  
+- Order items dataset  
+
+This resulted in a flat structure where each row represents a product within an order.
+
+---
+
+### 📊 Example Structure
+
+| order_id | customer_id | product_id | price | freight | delivered | estimated |
+|----------|------------|-----------|------|--------|----------|----------|
+| O1001 | C001 | P500 | 500 | 50 | Jan 5 | Jan 4 |
+
+---
+
+## 🧠 Feature Engineering
+
+To enable meaningful analysis, new variables were created:
+
+---
+
+### 🔥 Return Flag (`is_return`)
+
+```sql
+CASE 
+WHEN order_delivered_customer_date > order_estimated_delivery_date THEN 1
+ELSE 0
+END
+
+Raw CSV Data
+   ↓
+MySQL (Storage & Cleaning)
+   ↓
+Data Transformation
+   ↓
+Feature Engineering
+   ↓
+SQL Analysis
+   ↓
+Power BI Dashboard
+   ↓
+Business Insights
